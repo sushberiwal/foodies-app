@@ -48,6 +48,8 @@ async function createPaymentSession(req , res){
 
 async function checkoutComplete(req , res){
   console.log("Checkout complete ran !!");
+  console.log("Request object");
+  console.log(req);
 }
 
 
