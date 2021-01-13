@@ -3,7 +3,7 @@ const { protectRoute } = require("../Controller/authController");
 const { createPaymentSession  } = require("../Controller/bookingController");
 
 
-// const bookingRouter = express.Router();
+const bookingRouter = express.Router();
 
 bookingRouter.post("/createPaymentSession" , protectRoute , createPaymentSession);
 // bookingRouter.post("/checkoutComplete" , bodyParser.raw({type: 'application/json'}) , checkoutComplete );
