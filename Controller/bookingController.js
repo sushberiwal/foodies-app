@@ -17,6 +17,7 @@ async function createPaymentSession(req, res) {
     const session = await stripeObj.checkout.sessions.create({
       payment_method_types: ["card"],
       customer_email: user.email,
+      client_reference_id: planId,
       line_items: [
         {
           price_data: {
@@ -45,30 +46,34 @@ async function createPaymentSession(req, res) {
 }
 
 async function checkoutComplete(req, res) {
-  const END_POINT_KEY = process.env.END_POINT_KEY;
-  // console.log("Checkout complete ran !!");
-  // console.log("Request object");
-  // console.log(req);
-  const stripeSignature = req.headers["stripe-signature"];
-
-  let event;
-  try {
-    event = stripeObj.webhooks.constructEvent(req.body, stripeSignature, END_POINT_KEY);
-  } catch (err) {
-    res.status(400).send(`Webhook Error: ${err.message}`);
+  try{
+    const END_POINT_KEY = process.env.END_POINT_KEY;
+    // console.log("Checkout complete ran !!");
+    // console.log("Request object");
+    // console.log(req);
+    const stripeSignature = req.headers["stripe-signature"];
+  
+    console.log("endpoint key = " , END_POINT_KEY);
+    console.log("stripeSign = " , stripeSignature);
+    console.log("Req.bdoy =>" , req.body);
+  
+    // if(req.body.data.type == "checkout.session.completed"){
+      const userEmail = req.body.data.object.customer_email;
+      const planId = req.body.data.object.client_reference_id;
+      await createNewBooking(userEmail , planId); 
+    // }
   }
-
-  console.log("event object !!!");
-  console.log(event);
-  // if(event.type == "checkout.session.completed"){
-    
-  // }
-  // else{
-
-  // }
+  catch(error){
+    res.json({
+      error
+    })
+  }
 }
 
-async function createNewBooking(req, res) {
+async function createNewBooking(userEmail, planId) {
+  console.log("inside createNewBooking !!!");
+  console.log(userEmail);
+  console.log(planId);
   // booking collection =>
   // if(user.bookedPlanId){
   // get booking id => go to booking document , push in bookedPlans
