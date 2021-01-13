@@ -39,22 +39,22 @@ app.post("/api/booking/checkoutComplete" , bodyParser.raw({type: 'application/js
 
   console.log("endpoint key = " , END_POINT_KEY);
   console.log("stripeSign = " , stripeSignature);
-  let event;
-  try {
-    event = stripeObj.webhooks.constructEvent(req.body, stripeSignature, END_POINT_KEY);
-    console.log("Event = " , event);
-  } catch (err) {
-    res.status(400).send(`Webhook Error: ${err.message}`);
-  }
-
+  console.log("Req.bdoy =>" , req.body);
+  let event = stripeObj.webhooks.constructEvent(req.body, stripeSignature, END_POINT_KEY);
+  // let event;
+  // try 
+  console.log("Event = " , event);
+  // } catch (err) {
+    // res.status(400).send(`Webhook Error: ${err.message}`);
+  // }
   console.log("event object !!!");
   console.log(event);
-  // if(event.type == "checkout.session.completed"){
-    
-  // }
-  // else{
-
-  // }
+  if(event.type == "checkout.session.completed"){
+    console.log(event.data.object);
+  }
+  else{
+    console.log("event not created !!");
+  }
 })
 
 
